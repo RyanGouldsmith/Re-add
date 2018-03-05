@@ -1,7 +1,28 @@
-let component = ReasonReact.statelessComponent("Base");
+type todo = {
+  title: string,
+  mutable completed: bool
+};
 
-let make =  (_) => {
+type state = {
+  todoItems: array(todo)
+};
+
+let component = ReasonReact.reducerComponent("Base");
+
+let make = (_) => {
   ...component,
-  render: (_) =>
-    <h1> (ReasonReact.stringToElement("Todo List!!")) </h1>
+  initialState: () => {
+    todoItems: [|{ title: "Test Todo!", completed: false}|]
+  },
+  reducer: ((), _state) => ReasonReact.NoUpdate,
+  render: (self) => {
+    let todoItems = self.state.todoItems |> Array.map(({title}) => <TodoItem title />);
+    <div> 
+      <h1> (ReasonReact.stringToElement("Todo List!!")) </h1>
+      (<TodoInput title="Enter a Todo ..."/>)
+      <ul className="todo-list">
+        (ReasonReact.arrayToElement(todoItems))
+      </ul>
+    </div>
+  }
 };
